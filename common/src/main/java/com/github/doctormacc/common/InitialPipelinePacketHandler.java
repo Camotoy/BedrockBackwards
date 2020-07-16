@@ -123,10 +123,9 @@ public class InitialPipelinePacketHandler implements BedrockPacketHandler {
         BedrockClient client = BedrockBackwards.newClient();
         client.setRakNetVersion(serverVersion.getRaknetVersion());
         //TODO: Use config
-        client.connect(new InetSocketAddress("172.16.1.213", 19133)).whenComplete((downstream, throwable) -> {
+        client.connect(new InetSocketAddress(BedrockBackwards.config.getRemote().getAddress(), BedrockBackwards.config.getRemote().getPort())).whenComplete((downstream, throwable) -> {
             if (throwable != null) {
-                //log.error("Unable to connect to downstream server " + proxy.getTargetAddress(), throwable);
-                BedrockBackwards.LOGGER.info("Unable to connect to downstream server.");
+                BedrockBackwards.LOGGER.info("Unable to connect to downstream server. " + throwable);
                 return;
             }
             downstream.setPacketCodec(serverVersion.getBedrockCodec());

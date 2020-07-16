@@ -14,7 +14,9 @@ import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
+import java.net.InetSocketAddress;
 import java.security.KeyPair;
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -32,14 +34,25 @@ public class PlayerSession {
 
     private final BasePacketHandler[] translators;
 
+    // For debugging purposes
+    @Setter
+    private BedrockPacket lastPacket;
+
     public PlayerSession(BedrockServerSession upstream, BedrockClientSession downstream, AuthData authData) {
         this.upstream = upstream;
         this.downstream = downstream;
         this.authData = authData;
         this.upstream.addDisconnectHandler(reason -> {
-            if (reason != DisconnectReason.DISCONNECTED) {
-                this.downstream.disconnect();
-            }
+            BedrockBackwards.LOGGER.info("Client disconnected from server: " + reason);
+            // Is this check needed if we have endSession instead of directly disconnecting?
+            // It should be disconnected anyway but we might want to handle other things there too
+            // if (reason != DisconnectReason.DISCONNECTED) {
+                endSession();
+            // }
+        });
+        this.downstream.addDisconnectHandler(reason -> {
+            BedrockBackwards.LOGGER.info("Server disconnected client: " + reason);
+            endSession();
         });
 
         boolean isNewerClient = this.upstream.getPacketCodec().getProtocolVersion() > this.downstream.getPacketCodec().getProtocolVersion();
@@ -124,6 +137,25 @@ public class PlayerSession {
                 }
             }
         }
+    }
+
+    public InetSocketAddress getClientAddress() {
+        return downstream.getAddress();
+    }
+
+    public void endSession() {
+        if (lastPacket != null) {
+            BedrockBackwards.LOGGER.info("Session ended. Last packet type: " + lastPacket.getPacketType());
+        } else {
+            BedrockBackwards.LOGGER.info("Session ended.");
+        }
+        try {
+            upstream.disconnect();
+        } catch (IllegalStateException e) {} // Connection already closed
+
+        try {
+            downstream.disconnect();
+        } catch (IllegalStateException e) {} // Connection already closed
     }
 }
 
