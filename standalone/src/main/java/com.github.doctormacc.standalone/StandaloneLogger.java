@@ -17,6 +17,14 @@ public class StandaloneLogger extends SimpleTerminalConsole implements Logger {
         log.info(message);
     }
 
+    public void debug(String message) {
+        log.debug(message);
+    }
+
+    public void setDebug(boolean debug) {
+        Configurator.setLevel(log.getName(), debug ? Level.DEBUG : Level.INFO );
+    }
+
     protected boolean isRunning() {
         return true;
     }

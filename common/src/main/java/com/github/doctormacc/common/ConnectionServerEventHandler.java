@@ -14,7 +14,7 @@ public class ConnectionServerEventHandler implements BedrockServerEventHandler {
     }
 
     public BedrockPong onQuery(InetSocketAddress inetSocketAddress) {
-        BedrockBackwards.LOGGER.info("Ping from " + inetSocketAddress.getAddress());
+        BedrockBackwards.LOGGER.debug("Ping from " + inetSocketAddress.getAddress());
         BedrockPong pong = new BedrockPong();
         pong.setEdition("MCPE");
         pong.setGameType("Default");

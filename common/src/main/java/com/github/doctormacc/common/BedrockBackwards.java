@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nukkitx.protocol.bedrock.BedrockClient;
 import com.nukkitx.protocol.bedrock.BedrockServer;
+import lombok.Getter;
 
 import java.net.InetSocketAddress;
 import java.util.Collections;
@@ -17,12 +18,15 @@ public class BedrockBackwards {
     private static final Set<BedrockClient> CLIENTS = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     public static Logger LOGGER;
+    public static BedrockBackwardsConfiguration config;
 
-    public static void start(Logger logger) {
-         LOGGER = logger;
-         BedrockServer server = new BedrockServer(new InetSocketAddress("172.16.1.21", 19132));
-         server.setHandler(new ConnectionServerEventHandler());
-         server.bind().whenComplete((avoid, throwable) -> {
+    public static void start(Logger logger, BedrockBackwardsConfiguration config) {
+        BedrockBackwards.config = config;
+        LOGGER = logger;
+        logger.setDebug(config.isDebugMode());
+        BedrockServer server = new BedrockServer(new InetSocketAddress(config.getListen().getAddress(), config.getListen().getPort()));
+        server.setHandler(new ConnectionServerEventHandler());
+        server.bind().whenComplete((avoid, throwable) -> {
             if (throwable == null) {
                 logger.info("BedrockBackwards started!");
             } else {

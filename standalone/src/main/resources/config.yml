@@ -1,0 +1,16 @@
+listen:
+  # The IP address that will listen for connections
+  address: 0.0.0.0
+  # The port that will listen for connections
+  port: 19133
+remote:
+  # The IP address of the remote server
+  address: localhost
+  # The port of the remote (Java Edition) server
+  port: 19132
+
+# If debug messages should be sent through console
+debug-mode: true
+
+# DO NOT TOUCH!
+config-version: 1

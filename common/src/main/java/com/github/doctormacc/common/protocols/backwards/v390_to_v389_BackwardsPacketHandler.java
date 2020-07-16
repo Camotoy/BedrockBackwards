@@ -6,7 +6,7 @@ import com.nukkitx.protocol.bedrock.BedrockPacket;
 public class v390_to_v389_BackwardsPacketHandler extends BackwardsPacketHandler {
 
     @Override
-    public void translate(PlayerSession session, BedrockPacket packet, boolean upstream, int translatorIndex) {
-
+    public boolean translate(PlayerSession session, BedrockPacket packet, boolean upstream, int translatorIndex) {
+        return true;
     }
 }
