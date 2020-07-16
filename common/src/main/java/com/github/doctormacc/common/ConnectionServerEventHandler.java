@@ -20,7 +20,7 @@ public class ConnectionServerEventHandler implements BedrockServerEventHandler {
         pong.setGameType("Default");
         pong.setNintendoLimited(false);
         pong.setProtocolVersion(389);
-        pong.setIpv4Port(19132);
+        pong.setIpv4Port(BedrockBackwards.CONFIG.getListen().getPort());
         pong.setMotd("BedrockBackwards");
         pong.setSubMotd("BedrockBackwards");
         pong.setPlayerCount(0);
