@@ -27,4 +27,4 @@ jobs:
       if: success()
       with:
         name: Geyser Standalone
-        path: bootstrap/standalone/target/Geyser.jar
+        path: standalone/target/standalone-1.0-SNAPSHOT.jar
