@@ -34,10 +34,6 @@ public class PlayerSession {
 
     private final BasePacketHandler[] translators;
 
-    // For debugging purposes
-    @Setter
-    private BedrockPacket lastPacket;
-
     public PlayerSession(BedrockServerSession upstream, BedrockClientSession downstream, AuthData authData) {
         this.upstream = upstream;
         this.downstream = downstream;
@@ -144,11 +140,6 @@ public class PlayerSession {
     }
 
     public void endSession() {
-        if (lastPacket != null) {
-            BedrockBackwards.LOGGER.info("Session ended. Last packet type: " + lastPacket.getPacketType());
-        } else {
-            BedrockBackwards.LOGGER.info("Session ended.");
-        }
         try {
             upstream.disconnect();
         } catch (IllegalStateException e) {} // Connection already closed
