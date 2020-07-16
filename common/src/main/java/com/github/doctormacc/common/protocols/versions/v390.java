@@ -9,7 +9,7 @@ public class v390 extends BedrockVersion {
     public v390() {
         this.bedrockCodec = Bedrock_v390.V390_CODEC;
         this.protocolVersion = this.bedrockCodec.getProtocolVersion();
-        this.raknetVersion = this.bedrockCodec.getRaknetProtocolVersion();
+        this.raknetVersion = 9;
         this.backwardsPacketHandler = v390_to_v389_BackwardsPacketHandler.class;
         this.forwardsPacketHandler = v390_to_v407_ForwardsPacketHandler.class;
     }

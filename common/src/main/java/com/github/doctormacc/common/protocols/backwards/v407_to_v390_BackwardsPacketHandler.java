@@ -47,7 +47,7 @@ public class v407_to_v390_BackwardsPacketHandler extends BackwardsPacketHandler 
             return false;
         }
 
-        // From gophertunnel:
+        // From GopherTunnel:
         // CreativeContent is a packet sent by the server to set the creative inventory's content for a player.
         // Introduced in 1.16, this packet replaces the previous method - sending an InventoryContent packet with
         // creative inventory window ID.
@@ -57,6 +57,10 @@ public class v407_to_v390_BackwardsPacketHandler extends BackwardsPacketHandler 
             contentPacket.setContents(((CreativeContentPacket) packet).getEntries().values().toArray(new ItemData[0]));
             BasePacketHandler.translatePacket(session, contentPacket, upstream, translatorIndex);
             return false;
+        }
+
+        else if (StartGamePacket.class.equals(packet.getClass())) {
+            ((StartGamePacket) packet).setPremiumWorldTemplateId(((StartGamePacket) packet).getLevelName()); // Otherwise world name is a UUID
         }
 
         else if (AddEntityPacket.class.equals(packet.getClass())) {

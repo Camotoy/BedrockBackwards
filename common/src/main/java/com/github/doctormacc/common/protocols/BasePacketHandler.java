@@ -19,17 +19,26 @@ public abstract class BasePacketHandler {
     public abstract boolean translate(PlayerSession session, BedrockPacket packet, boolean upstream, int translatorIndex);
 
     public static void translatePacket(PlayerSession session, BedrockPacket packet, boolean upstream, int translatorIndex) {
-        // System.out.println("Is upstream: " + upstream);
+        System.out.println("Is upstream: " + upstream + " packet: " + packet.getPacketType());
 
         if (PacketViolationWarningPacket.class.equals(packet.getClass())) {
             BedrockBackwards.LOGGER.info("Packet violation warning: " + packet);
         }
 
-        if (packet == null) return;
-        for (int i = translatorIndex; i < session.getTranslators().length; i++) {
-            if (!session.getTranslators()[i].translate(session, packet, false, i)) {
-                // If the translation should be cancelled and the packet should be ignored
-                return;
+        if (upstream) {
+            // Translate backwards
+            for (int i = session.getTranslators().length - 1 - translatorIndex; i >= 0; i--) {
+                if (!session.getTranslators()[i].translate(session, packet, true, i)) {
+                    // If the translation should be cancelled and the packet should be ignored
+                    return;
+                }
+            }
+        } else {
+            for (int i = translatorIndex; i < session.getTranslators().length; i++) {
+                if (!session.getTranslators()[i].translate(session, packet, false, i)) {
+                    // If the translation should be cancelled and the packet should be ignored
+                    return;
+                }
             }
         }
         try {
@@ -39,12 +48,12 @@ public abstract class BasePacketHandler {
                 session.getUpstream().sendPacket(packet);
             }
         } catch (Exception e) {
-            if (e instanceof IllegalStateException && e.getMessage() == "Connection has been closed") {
+            if (e instanceof IllegalStateException && e.getMessage().equals("Connection has been closed")) {
                 BedrockBackwards.LOGGER.info("Connection from " + session.getClientAddress() + " closed");
                 session.endSession();
                 return;
             }
-            BedrockBackwards.LOGGER.info("Failed to translate packet of type " + packet.getPacketType());
+            BedrockBackwards.LOGGER.info("Failed to send packet of type " + packet.getPacketType());
             e.printStackTrace();
         }
     }

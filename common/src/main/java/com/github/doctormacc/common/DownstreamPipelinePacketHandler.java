@@ -18,6 +18,9 @@ import java.security.spec.InvalidKeySpecException;
 import java.text.ParseException;
 import java.util.Base64;
 
+/**
+ * Handles all packets coming in from the remote server.
+ */
 @AllArgsConstructor
 public class DownstreamPipelinePacketHandler extends ProtocolPacketHandler {
 

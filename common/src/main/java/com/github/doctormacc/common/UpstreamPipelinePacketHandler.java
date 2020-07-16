@@ -4,6 +4,9 @@ import com.github.doctormacc.common.protocols.BasePacketHandler;
 import com.nukkitx.protocol.bedrock.BedrockPacket;
 import lombok.AllArgsConstructor;
 
+/**
+ * Handles all packets coming from the connected client.
+ */
 @AllArgsConstructor
 public class UpstreamPipelinePacketHandler extends ProtocolPacketHandler {
 

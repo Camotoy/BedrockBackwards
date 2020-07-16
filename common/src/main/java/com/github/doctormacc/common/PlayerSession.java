@@ -54,22 +54,33 @@ public class PlayerSession {
         boolean isNewerClient = this.upstream.getPacketCodec().getProtocolVersion() > this.downstream.getPacketCodec().getProtocolVersion();
         BedrockBackwards.LOGGER.info("Is newer client: " + isNewerClient);
         ObjectArrayList<BasePacketHandler> translators = new ObjectArrayList<>();
-        for (int protocolVersion : BedrockVersion.VERSIONS) {
-            if (isNewerClient && protocolVersion < this.upstream.getPacketCodec().getProtocolVersion() &&
-            protocolVersion >= this.downstream.getPacketCodec().getProtocolVersion()) {
-                try {
-                    translators.add(BedrockVersion.getBedrockVersion(protocolVersion).getForwardsPacketHandler().newInstance());
-                } catch (Exception e) {
-                    BedrockBackwards.LOGGER.info("Exception whilst adding translator to collection.");
-                    e.printStackTrace();
+        // Apply the translators
+        // The translators should be applied from server -> client.
+        // If the server is 470 and the client is 389, then the order should be v470_to_v390 then v390_to_389
+        if (isNewerClient) {
+            // Go through translator list backwards and apply in that order
+            for (int protocolVersion : BedrockVersion.VERSIONS) {
+                if (protocolVersion < this.upstream.getPacketCodec().getProtocolVersion() &&
+                        protocolVersion >= this.downstream.getPacketCodec().getProtocolVersion()) {
+                    try {
+                        translators.add(BedrockVersion.getBedrockVersion(protocolVersion).getForwardsPacketHandler().newInstance());
+                    } catch (Exception e) {
+                        BedrockBackwards.LOGGER.info("Exception whilst adding translator to collection.");
+                        e.printStackTrace();
+                    }
                 }
-            } else if (!isNewerClient && protocolVersion > this.upstream.getPacketCodec().getProtocolVersion() &&
-            protocolVersion <= this.downstream.getPacketCodec().getProtocolVersion()) {
-                try {
-                    translators.add(BedrockVersion.getBedrockVersion(protocolVersion).getBackwardsPacketHandler().newInstance());
-                } catch (Exception e) {
-                    BedrockBackwards.LOGGER.info("Exception whilst adding translator to collection.");
-                    e.printStackTrace();
+            }
+        } else {
+            for (int i = BedrockVersion.VERSIONS.length - 1; i >= 0; i--) {
+                int protocolVersion = BedrockVersion.VERSIONS[i];
+                if (protocolVersion > this.upstream.getPacketCodec().getProtocolVersion() &&
+                        protocolVersion <= this.downstream.getPacketCodec().getProtocolVersion()) {
+                    try {
+                        translators.add(BedrockVersion.getBedrockVersion(protocolVersion).getBackwardsPacketHandler().newInstance());
+                    } catch (Exception e) {
+                        BedrockBackwards.LOGGER.info("Exception whilst adding translator to collection.");
+                        e.printStackTrace();
+                    }
                 }
             }
         }
