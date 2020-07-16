@@ -6,8 +6,13 @@ listen:
 remote:
   # The IP address of the remote server
   address: localhost
-  # The port of the remote (Java Edition) server
+  # The port of the remote server
   port: 19132
+  # The protocol version of the remote server
+  # 389 - 1.14.0
+  # 390 - 1.14.60
+  # 407 - 1.16.0
+  protocol-version: 407
 
 # If debug messages should be sent through console
 debug-mode: true

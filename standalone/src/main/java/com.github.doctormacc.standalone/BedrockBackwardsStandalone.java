@@ -14,7 +14,7 @@ import org.apache.commons.io.FileUtils;
 public class BedrockBackwardsStandalone {
 
     @Getter
-    private static BedrockBackwardsStandaloneConfiguration config;
+    private static StandaloneConfiguration config;
 
     public static void main(String[] args) {
         StandaloneLogger logger = new StandaloneLogger();
@@ -32,7 +32,7 @@ public class BedrockBackwardsStandalone {
 
         ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
         try {
-            config = objectMapper.readValue(configFile, BedrockBackwardsStandaloneConfiguration.class);
+            config = objectMapper.readValue(configFile, StandaloneConfiguration.class);
         } catch (IOException e) {
             e.printStackTrace();
             logger.info("Cannot load config file - exiting...");

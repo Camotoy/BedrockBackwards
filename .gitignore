@@ -223,4 +223,5 @@ nbdist/
 
 ### BedrockBackwards ###
 
+config.yml
 logs/
