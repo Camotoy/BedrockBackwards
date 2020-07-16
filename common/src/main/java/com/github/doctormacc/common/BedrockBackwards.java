@@ -23,6 +23,9 @@ public class BedrockBackwards {
         BedrockBackwards.CONFIG = config;
         LOGGER = logger;
         logger.setDebug(config.isDebugMode());
+
+        logger.info("BedrockBackwards starting...");
+
         BedrockServer server = new BedrockServer(new InetSocketAddress(config.getListen().getAddress(), config.getListen().getPort()));
         server.setHandler(new ConnectionServerEventHandler());
         server.bind().whenComplete((avoid, throwable) -> {
