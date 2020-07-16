@@ -31,7 +31,7 @@ public class ConnectionServerEventHandler implements BedrockServerEventHandler {
     public void onSessionCreation(BedrockServerSession bedrockServerSession) {
         BedrockBackwards.LOGGER.info("Creating session!");
         bedrockServerSession.setLogging(true);
-        bedrockServerSession.setPacketHandler(new InitialPacketHandler(bedrockServerSession));
+        bedrockServerSession.setPacketHandler(new InitialPipelinePacketHandler(bedrockServerSession));
         bedrockServerSession.setPacketCodec(Bedrock_v389.V389_CODEC);
     }
 }

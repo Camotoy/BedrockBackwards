@@ -1,5 +1,7 @@
 package com.github.doctormacc.common;
 
+import com.github.doctormacc.common.protocols.BasePacketHandler;
+import com.github.doctormacc.common.protocols.versions.BedrockVersion;
 import com.nukkitx.network.util.DisconnectReason;
 import com.nukkitx.protocol.bedrock.BedrockClientSession;
 import com.nukkitx.protocol.bedrock.BedrockPacket;
@@ -9,6 +11,7 @@ import com.nukkitx.protocol.bedrock.handler.BatchHandler;
 import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
 import com.nukkitx.protocol.bedrock.util.EncryptionUtils;
 import io.netty.buffer.ByteBuf;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -27,6 +30,8 @@ public class PlayerSession {
     private final KeyPair proxyKeyPair = EncryptionUtils.createKeyPair();
     private volatile boolean closed = false;
 
+    private final BasePacketHandler[] translators;
+
     public PlayerSession(BedrockServerSession upstream, BedrockClientSession downstream, AuthData authData) {
         this.upstream = upstream;
         this.downstream = downstream;
@@ -36,20 +41,45 @@ public class PlayerSession {
                 this.downstream.disconnect();
             }
         });
+
+        boolean isNewerClient = this.upstream.getPacketCodec().getProtocolVersion() > this.downstream.getPacketCodec().getProtocolVersion();
+        BedrockBackwards.LOGGER.info("Is newer client: " + isNewerClient);
+        ObjectArrayList<BasePacketHandler> translators = new ObjectArrayList<>();
+        for (int protocolVersion : BedrockVersion.VERSIONS) {
+            if (isNewerClient && protocolVersion < this.upstream.getPacketCodec().getProtocolVersion() &&
+            protocolVersion >= this.downstream.getPacketCodec().getProtocolVersion()) {
+                try {
+                    translators.add(BedrockVersion.getBedrockVersion(protocolVersion).getForwardsPacketHandler().newInstance());
+                } catch (Exception e) {
+                    BedrockBackwards.LOGGER.info("Exception whilst adding translator to collection.");
+                    e.printStackTrace();
+                }
+            } else if (!isNewerClient && protocolVersion > this.upstream.getPacketCodec().getProtocolVersion() &&
+            protocolVersion <= this.downstream.getPacketCodec().getProtocolVersion()) {
+                try {
+                    translators.add(BedrockVersion.getBedrockVersion(protocolVersion).getBackwardsPacketHandler().newInstance());
+                } catch (Exception e) {
+                    BedrockBackwards.LOGGER.info("Exception whilst adding translator to collection.");
+                    e.printStackTrace();
+                }
+            }
+        }
+        BedrockBackwards.LOGGER.info("Translators: " + translators.toString());
+        this.translators = translators.toArray(new BasePacketHandler[0]);
     }
 
     public BatchHandler getUpstreamBatchHandler() {
-        return new ProxyBatchHandler(downstream, true);
+        return new ProxyBatchHandler(downstream);
     }
 
     public BatchHandler getDownstreamTailHandler() {
-        return new ProxyBatchHandler(upstream, false);
+        return new ProxyBatchHandler(upstream);
     }
 
-    private class ProxyBatchHandler implements BatchHandler {
+    private static class ProxyBatchHandler implements BatchHandler {
         private final BedrockSession session;
 
-        private ProxyBatchHandler(BedrockSession session, boolean upstream) {
+        private ProxyBatchHandler(BedrockSession session) {
             this.session = session;
         }
 

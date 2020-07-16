@@ -4,9 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
-import com.github.doctormacc.common.protocols.v407_to_v390.v407_to_v390_DownstreamPacketHandler;
-import com.github.doctormacc.common.protocols.v407_to_v390.v407_to_v390_UpstreamPacketHandler;
-import com.github.doctormacc.common.protocols.v407_to_v390.versions.BedrockVersion;
+import com.github.doctormacc.common.protocols.versions.BedrockVersion;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.crypto.factories.DefaultJWSVerifierFactory;
@@ -25,7 +23,7 @@ import java.net.InetSocketAddress;
 import java.security.interfaces.ECPublicKey;
 import java.util.UUID;
 
-public class InitialPacketHandler implements BedrockPacketHandler {
+public class InitialPipelinePacketHandler implements BedrockPacketHandler {
 
     private final BedrockServerSession session;
     private PlayerSession player;
@@ -34,43 +32,9 @@ public class InitialPacketHandler implements BedrockPacketHandler {
     private ArrayNode chainData;
     private AuthData authData;
 
-    public InitialPacketHandler(BedrockServerSession session) {
+    public InitialPipelinePacketHandler(BedrockServerSession session) {
         this.session = session;
     }
-
-//    @Override
-//    public boolean handle(LoginPacket packet) {
-//        BedrockBackwards.LOGGER.info("Logging in!");
-//
-//        BedrockClient client = new BedrockClient(new InetSocketAddress("0.0.0.0", 12345));
-//
-//        client.setRakNetVersion(10);
-//        client.bind().join();
-//
-//        InetSocketAddress addressToConnect = new InetSocketAddress("172.16.1.213", 19133);
-//        client.connect(addressToConnect).whenComplete((session, throwable) -> {
-//            if (throwable != null) {
-//                // Unable to establish connection
-//                return;
-//            }
-//            // Connection established
-//            // Make sure to set the packet codec version you wish to use before sending out packets
-//            session.setPacketCodec(Bedrock_v407.V407_CODEC);
-//            // Add disconnect handler
-//            session.addDisconnectHandler((reason) -> BedrockBackwards.LOGGER.info("Disconnected from remote server: " + reason.toString()));
-//            // Remember to set a packet handler so you receive incoming packets
-//            session.setPacketHandler(new v407_to_v390_UpstreamPacketHandler(this.session));
-//            // Now send packets...
-//        }).join();
-//
-//        if (packet.getProtocolVersion() == 390) {
-//            BedrockBackwards.LOGGER.info("Setting protocol version to 390.");
-//            session.setPacketCodec(Bedrock_v390.V390_CODEC);
-//            session.setPacketHandler(new v407_to_v390_DownstreamPacketHandler(client, packet));
-//        }
-//
-//        return false;
-//    }
 
     private static boolean validateChainData(JsonNode data) throws Exception {
         ECPublicKey lastKey = null;
@@ -190,8 +154,8 @@ public class InitialPacketHandler implements BedrockPacketHandler {
             this.session.setBatchHandler(proxySession.getUpstreamBatchHandler());
             downstream.setBatchHandler(proxySession.getDownstreamTailHandler());
             downstream.setLogging(true);
-            session.setPacketHandler(new v407_to_v390_UpstreamPacketHandler(this.player));
-            downstream.setPacketHandler(new v407_to_v390_DownstreamPacketHandler(this.player));
+            session.setPacketHandler(new UpstreamPipelinePacketHandler(this.player));
+            downstream.setPacketHandler(new DownstreamPipelinePacketHandler(this.player));
         });
     }
 

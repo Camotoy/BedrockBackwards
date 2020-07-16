@@ -1,7 +1,10 @@
 package com.github.doctormacc.common;
 
+import com.github.doctormacc.common.protocols.BasePacketHandler;
 import com.nimbusds.jwt.SignedJWT;
+import com.nukkitx.protocol.bedrock.BedrockPacket;
 import com.nukkitx.protocol.bedrock.packet.ClientToServerHandshakePacket;
+import com.nukkitx.protocol.bedrock.packet.DisconnectPacket;
 import com.nukkitx.protocol.bedrock.packet.ServerToClientHandshakePacket;
 import com.nukkitx.protocol.bedrock.util.EncryptionUtils;
 import lombok.AllArgsConstructor;
@@ -16,9 +19,21 @@ import java.text.ParseException;
 import java.util.Base64;
 
 @AllArgsConstructor
-public class DownstreamProtocolPacketHandler extends ProtocolPacketHandler {
+public class DownstreamPipelinePacketHandler extends ProtocolPacketHandler {
 
     protected PlayerSession session;
+
+    @Override
+    public boolean defaultHandler(BedrockPacket packet) {
+        BasePacketHandler.translatePacket(session, packet, false, 0);
+        return true;
+    }
+
+    @Override
+    public boolean handle(DisconnectPacket packet) {
+        session.getUpstream().disconnect();
+        return false;
+    }
 
     @Override
     public boolean handle(ServerToClientHandshakePacket packet) {
