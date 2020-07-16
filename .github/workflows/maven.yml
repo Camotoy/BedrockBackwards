@@ -26,5 +26,5 @@ jobs:
       uses: actions/upload-artifact@v2
       if: success()
       with:
-        name: Geyser Standalone
+        name: BedrockBackwards Standalone
         path: standalone/target/standalone-1.0-SNAPSHOT.jar
