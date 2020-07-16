@@ -2,14 +2,14 @@ package com.github.doctormacc.common.protocols.backwards;
 
 import com.github.doctormacc.common.BedrockBackwards;
 import com.github.doctormacc.common.PlayerSession;
+import com.github.doctormacc.common.protocols.BasePacketHandler;
 import com.nukkitx.protocol.bedrock.BedrockPacket;
 import com.nukkitx.protocol.bedrock.BedrockPacketType;
 import com.nukkitx.protocol.bedrock.data.entity.EntityData;
 import com.nukkitx.protocol.bedrock.data.entity.EntityFlag;
-import com.nukkitx.protocol.bedrock.packet.AddEntityPacket;
-import com.nukkitx.protocol.bedrock.packet.CreativeContentPacket;
-import com.nukkitx.protocol.bedrock.packet.ItemStackRequestPacket;
-import com.nukkitx.protocol.bedrock.packet.SetEntityDataPacket;
+import com.nukkitx.protocol.bedrock.data.inventory.ContainerId;
+import com.nukkitx.protocol.bedrock.data.inventory.ItemData;
+import com.nukkitx.protocol.bedrock.packet.*;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class v407_to_v390_BackwardsPacketHandler extends BackwardsPacketHandler {
@@ -37,25 +37,29 @@ public class v407_to_v390_BackwardsPacketHandler extends BackwardsPacketHandler 
         ENTITYFLAGS_REMOVE_LIST.add(EntityFlag.CELEBRATING);
         ENTITYFLAGS_REMOVE_LIST.add(EntityFlag.ADMIRING);
         ENTITYFLAGS_REMOVE_LIST.add(EntityFlag.CELEBRATING_SPECIAL);
-
-        // TODO: Implement translator
-        // From gophertunnel:
-        // CreativeContent is a packet sent by the server to set the creative inventory's content for a player.
-        // Introduced in 1.16, this packet replaces the previous method - sending an InventoryContent packet with
-        // creative inventory window ID.
-        IGNORE_PACKETS_LIST.add(CreativeContentPacket.class);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean translate(PlayerSession session, BedrockPacket packet, boolean upstream, int translatorIndex) {
         if (IGNORE_PACKETS_LIST.contains(packet.getClass())) {
             BedrockBackwards.LOGGER.debug("Ignoring packet " + packet.getPacketType());
             return false;
         }
 
-        if (ItemStackRequestPacket.class.equals(packet.getClass())) {
-            BedrockBackwards.LOGGER.info("Item stack request packet.");
-        } else if (AddEntityPacket.class.equals(packet.getClass())) {
+        // From gophertunnel:
+        // CreativeContent is a packet sent by the server to set the creative inventory's content for a player.
+        // Introduced in 1.16, this packet replaces the previous method - sending an InventoryContent packet with
+        // creative inventory window ID.
+        else if (CreativeContentPacket.class.equals(packet.getClass())) {
+            InventoryContentPacket contentPacket = new InventoryContentPacket();
+            contentPacket.setContainerId(ContainerId.CREATIVE);
+            contentPacket.setContents(((CreativeContentPacket) packet).getEntries().values().toArray(new ItemData[0]));
+            BasePacketHandler.translatePacket(session, contentPacket, upstream, translatorIndex);
+            return false;
+        }
+
+        else if (AddEntityPacket.class.equals(packet.getClass())) {
             for (EntityData data : ((AddEntityPacket) packet).getMetadata().keySet()) {
                 if (ENTITYDATA_REMOVE_LIST.contains(data)) {
                     ((AddEntityPacket) packet).getMetadata().remove(data);
