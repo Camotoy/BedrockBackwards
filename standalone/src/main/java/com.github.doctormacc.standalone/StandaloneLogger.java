@@ -1,3 +1,5 @@
+package com.github.doctormacc.standalone;
+
 import com.github.doctormacc.common.Logger;
 import lombok.extern.log4j.Log4j2;
 import net.minecrell.terminalconsole.SimpleTerminalConsole;

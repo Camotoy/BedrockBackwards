@@ -1,3 +1,5 @@
+package com.github.doctormacc.standalone;
+
 import com.github.doctormacc.common.BedrockBackwards;
 
 public class BedrockBackwardsStandalone {
