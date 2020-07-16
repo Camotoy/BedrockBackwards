@@ -41,7 +41,7 @@ public class v407_to_v390_BackwardsPacketHandler extends BackwardsPacketHandler 
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean translate(PlayerSession session, BedrockPacket packet, boolean upstream, int translatorIndex) {
+    public boolean translate(PlayerSession session, BedrockPacket packet, boolean fromUpstream, int translatorIndex) {
         if (IGNORE_PACKETS_LIST.contains(packet.getClass())) {
             BedrockBackwards.LOGGER.debug("Ignoring packet " + packet.getPacketType());
             return false;
@@ -55,7 +55,7 @@ public class v407_to_v390_BackwardsPacketHandler extends BackwardsPacketHandler 
             InventoryContentPacket contentPacket = new InventoryContentPacket();
             contentPacket.setContainerId(ContainerId.CREATIVE);
             contentPacket.setContents(((CreativeContentPacket) packet).getEntries().values().toArray(new ItemData[0]));
-            BasePacketHandler.translatePacket(session, contentPacket, upstream, translatorIndex);
+            BasePacketHandler.translatePacket(session, contentPacket, fromUpstream, translatorIndex);
             return false;
         }
 

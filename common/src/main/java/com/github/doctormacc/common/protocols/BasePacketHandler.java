@@ -11,21 +11,21 @@ public abstract class BasePacketHandler {
      *
      * @param session
      * @param packet
-     * @param upstream
+     * @param fromUpstream if the packet was sent from upstream
      * @param translatorIndex the current index of the translator array. This is used in order to pass on created packets
      *                        to newer versions.
      * @return Whether the packet should be translated. false means that the translation should be cancelled.
      */
-    public abstract boolean translate(PlayerSession session, BedrockPacket packet, boolean upstream, int translatorIndex);
+    public abstract boolean translate(PlayerSession session, BedrockPacket packet, boolean fromUpstream, int translatorIndex);
 
-    public static void translatePacket(PlayerSession session, BedrockPacket packet, boolean upstream, int translatorIndex) {
-        System.out.println("Is upstream: " + upstream + " packet: " + packet.getPacketType());
+    public static void translatePacket(PlayerSession session, BedrockPacket packet, boolean fromUpstream, int translatorIndex) {
+        System.out.println("Is upstream: " + fromUpstream + " packet: " + packet.getPacketType());
 
         if (PacketViolationWarningPacket.class.equals(packet.getClass())) {
             BedrockBackwards.LOGGER.info("Packet violation warning: " + packet);
         }
 
-        if (upstream) {
+        if (fromUpstream) {
             // Translate backwards
             for (int i = session.getTranslators().length - 1 - translatorIndex; i >= 0; i--) {
                 if (!session.getTranslators()[i].translate(session, packet, true, i)) {
@@ -42,7 +42,7 @@ public abstract class BasePacketHandler {
             }
         }
         try {
-            if (upstream) {
+            if (fromUpstream) {
                 session.getDownstream().sendPacket(packet);
             } else {
                 session.getUpstream().sendPacket(packet);

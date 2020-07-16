@@ -13,7 +13,7 @@ import com.nukkitx.protocol.bedrock.packet.StartGamePacket;
 public class v390_to_v407_ForwardsPacketHandler extends ForwardsPacketHandler {
 
     @Override
-    public boolean translate(PlayerSession session, BedrockPacket packet, boolean upstream, int translatorIndex) {
+    public boolean translate(PlayerSession session, BedrockPacket packet, boolean fromUpstream, int translatorIndex) {
 
         if (StartGamePacket.class.equals(packet.getClass())) {
             ((StartGamePacket) packet).setInventoriesServerAuthoritative(false);
@@ -27,7 +27,7 @@ public class v390_to_v407_ForwardsPacketHandler extends ForwardsPacketHandler {
                     contentPacket.getEntries().put(i, content);
                     i++;
                 }
-                BasePacketHandler.translatePacket(session, contentPacket, upstream, translatorIndex);
+                BasePacketHandler.translatePacket(session, contentPacket, fromUpstream, translatorIndex);
                 return false;
             }
         }
