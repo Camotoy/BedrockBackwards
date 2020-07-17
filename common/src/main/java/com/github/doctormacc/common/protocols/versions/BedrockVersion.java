@@ -18,6 +18,7 @@ public abstract class BedrockVersion {
     public static final int[] VERSIONS;
 
     static {
+        PROTOCOL_VERSIONS.put(388, v388.class);
         PROTOCOL_VERSIONS.put(389, v389.class);
         PROTOCOL_VERSIONS.put(390, v390.class);
         PROTOCOL_VERSIONS.put(407, v407.class);

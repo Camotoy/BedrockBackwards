@@ -3,7 +3,7 @@ package com.github.doctormacc.common;
 import com.nukkitx.protocol.bedrock.BedrockPong;
 import com.nukkitx.protocol.bedrock.BedrockServerEventHandler;
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
-import com.nukkitx.protocol.bedrock.v389.Bedrock_v389;
+import com.nukkitx.protocol.bedrock.v388.Bedrock_v388;
 
 import java.net.InetSocketAddress;
 
@@ -19,7 +19,7 @@ public class ConnectionServerEventHandler implements BedrockServerEventHandler {
         pong.setEdition("MCPE");
         pong.setGameType("Default");
         pong.setNintendoLimited(false);
-        pong.setProtocolVersion(389);
+        pong.setProtocolVersion(388);
         pong.setIpv4Port(BedrockBackwards.CONFIG.getListen().getPort());
         pong.setMotd("BedrockBackwards");
         pong.setSubMotd("BedrockBackwards");
@@ -32,6 +32,6 @@ public class ConnectionServerEventHandler implements BedrockServerEventHandler {
         BedrockBackwards.LOGGER.info("Creating session!");
         bedrockServerSession.setLogging(true);
         bedrockServerSession.setPacketHandler(new InitialPipelinePacketHandler(bedrockServerSession));
-        bedrockServerSession.setPacketCodec(Bedrock_v389.V389_CODEC);
+        bedrockServerSession.setPacketCodec(Bedrock_v388.V388_CODEC);
     }
 }
