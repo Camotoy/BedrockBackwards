@@ -19,6 +19,7 @@ public class v390_to_v407_ForwardsPacketHandler extends ForwardsPacketHandler {
         }
 
         else if (InventoryContentPacket.class.equals(packet.getClass())) {
+            //noinspection deprecation
             if (((InventoryContentPacket) packet).getContainerId() == ContainerId.CREATIVE) {
                 CreativeContentPacket contentPacket = new CreativeContentPacket();
                 int i = 1;
