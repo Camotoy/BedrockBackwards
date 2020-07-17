@@ -69,6 +69,23 @@ public class v407_to_v390_BackwardsPacketHandler extends BackwardsPacketHandler 
                     ((AddEntityPacket) packet).getMetadata().remove(data);
                 }
             }
+            String entityReplacement = null;
+            switch (((AddEntityPacket) packet).getIdentifier()) {
+                case "minecraft:hoglin":
+                case "minecraft:zoglin":
+                    entityReplacement = "minecraft:pig";
+                    break;
+                case "minecraft:piglin":
+                    entityReplacement = "minecraft:zombie_pigman";
+                    break;
+                case "minecraft:strider":
+                    entityReplacement = "minecraft:magma_cube";
+                default:
+                    break;
+            }
+            if (entityReplacement != null) {
+                ((AddEntityPacket) packet).setIdentifier(entityReplacement);
+            }
 //            for (EntityFlag flag : ENTITYFLAGS_REMOVE_LIST) {
 //                ((AddEntityPacket) packet).getMetadata().getFlags().setFlag(flag, false);
 //            }

@@ -19,7 +19,7 @@ public abstract class BasePacketHandler {
     public abstract boolean translate(PlayerSession session, BedrockPacket packet, boolean fromUpstream, int translatorIndex);
 
     public static void translatePacket(PlayerSession session, BedrockPacket packet, boolean fromUpstream, int translatorIndex) {
-        System.out.println("Is upstream: " + fromUpstream + " packet: " + packet.getPacketType());
+        //System.out.println("Is upstream: " + fromUpstream + " packet: " + packet.getPacketType());
 
         if (PacketViolationWarningPacket.class.equals(packet.getClass())) {
             BedrockBackwards.LOGGER.info("Packet violation warning: " + packet);
