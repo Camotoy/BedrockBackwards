@@ -15,7 +15,7 @@ remote:
   protocol-version: 407
 
 # If debug messages should be sent through console
-debug-mode: true
+debug-mode: false
 
 # DO NOT TOUCH!
 config-version: 1
