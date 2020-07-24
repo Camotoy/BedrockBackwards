@@ -54,7 +54,7 @@ public class v407_to_v390_BackwardsPacketHandler extends BackwardsPacketHandler 
         else if (CreativeContentPacket.class.equals(packet.getClass())) {
             InventoryContentPacket contentPacket = new InventoryContentPacket();
             contentPacket.setContainerId(ContainerId.CREATIVE);
-            contentPacket.setContents(((CreativeContentPacket) packet).getEntries().values().toArray(new ItemData[0]));
+            contentPacket.setContents(((CreativeContentPacket) packet).getContents());
             BasePacketHandler.translatePacket(session, contentPacket, fromUpstream, translatorIndex);
             return false;
         }

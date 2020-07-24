@@ -24,6 +24,7 @@ public abstract class BedrockVersion {
         PROTOCOL_VERSIONS.put(407, v407.class);
 
         VERSIONS = PROTOCOL_VERSIONS.keySet().toIntArray();
+        Arrays.sort(VERSIONS);
         System.out.println("Versions: " + Arrays.toString(VERSIONS));
     }
 
