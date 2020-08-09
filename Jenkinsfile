@@ -5,7 +5,7 @@ pipeline {
         jdk 'Java 8'
     }
     stages {
-        stage('build') {
+        stage('Build') {
             steps {
                 sh 'mvn clean package'
             }
@@ -20,7 +20,7 @@ pipeline {
                 branch "master"
             }
             steps {
-                withCredentials([usernamePassword(credentialsId: 'GitHubPAToken', usernameVariable: 'USERNAME', passwordVariable: 'GITHUB_TOKEN')]) {
+                withCredentials([usernamePassword(credentialsId: 'f8035f5a-4ca7-4afe-a087-ac0ab30134c2', usernameVariable: 'USERNAME', passwordVariable: 'GITHUB_TOKEN')]) {
                     sh 'echo "Creating a new release in github"'
                     sh 'github-release release --user DoctorMacc --repo BedrockBackwards --tag v${BUILD_NUMBER} --name "Jenkins build ${BUILD_NUMBER}"'
                     sh 'echo "Uploading the artifacts into github"'
