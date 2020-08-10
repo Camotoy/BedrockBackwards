@@ -11,7 +11,7 @@ public class v407 extends BedrockVersion {
         this.protocolVersion = 407;
         this.raknetVersion = 10;
         this.backwardsPacketHandler = v407_to_v390_BackwardsPacketHandler.class;
-        this.forwardsPacketHandler = v407_to_v408_BackwardsPacketHandler.class;
+        this.forwardsPacketHandler = v407_to_v408_ForwardsPacketHandler.class;
     }
 
 }
