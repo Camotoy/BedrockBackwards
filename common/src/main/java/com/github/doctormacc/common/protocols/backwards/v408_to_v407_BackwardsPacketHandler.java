@@ -16,8 +16,7 @@ public class v408_to_v407_BackwardsPacketHandler extends BackwardsPacketHandler 
             if (entityReplacement != null) {
                 ((AddEntityPacket) packet).setIdentifier(entityReplacement);
             }
-    
-            return true;
         }
+        return true;
     }
 }
