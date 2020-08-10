@@ -1,6 +1,7 @@
 package com.github.doctormacc.common.protocols.versions;
 
 import com.github.doctormacc.common.protocols.backwards.v407_to_v390_BackwardsPacketHandler;
+import com.github.doctormacc.common.protocols.forwards.v407_to_v408_ForwardsPacketHandler;
 import com.nukkitx.protocol.bedrock.v407.Bedrock_v407;
 
 public class v407 extends BedrockVersion {
@@ -10,6 +11,7 @@ public class v407 extends BedrockVersion {
         this.protocolVersion = 407;
         this.raknetVersion = 10;
         this.backwardsPacketHandler = v407_to_v390_BackwardsPacketHandler.class;
+        this.forwardsPacketHandler = v407_to_v408_BackwardsPacketHandler.class;
     }
 
 }
