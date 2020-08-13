@@ -11,8 +11,9 @@ remote:
   # The protocol version of the remote server
   # 389 - 1.14.0
   # 390 - 1.14.60
-  # 407 - 1.16.0
-  protocol-version: 407
+  # 407 - 1.16.0/1
+  # 408 - 1.16.2
+  protocol-version: 408
 
 # If debug messages should be sent through console
 debug-mode: false

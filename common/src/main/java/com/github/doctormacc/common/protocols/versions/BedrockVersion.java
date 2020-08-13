@@ -22,6 +22,7 @@ public abstract class BedrockVersion {
         PROTOCOL_VERSIONS.put(389, v389.class);
         PROTOCOL_VERSIONS.put(390, v390.class);
         PROTOCOL_VERSIONS.put(407, v407.class);
+        PROTOCOL_VERSIONS.put(408, v408.class);
 
         VERSIONS = PROTOCOL_VERSIONS.keySet().toIntArray();
         Arrays.sort(VERSIONS);
@@ -33,7 +34,7 @@ public abstract class BedrockVersion {
             return BedrockVersion.PROTOCOL_VERSIONS.get(protocolVersion).newInstance();
         } catch (Exception e) {
             BedrockBackwards.LOGGER.info("Unable to find supported protocol version for " + protocolVersion);
-            return new v407();
+            return new v408();
         }
     }
 
