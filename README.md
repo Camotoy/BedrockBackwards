@@ -7,4 +7,6 @@
 [![Discord](https://img.shields.io/discord/733331120267067463.svg?color=%237289da&label=discord)](https://discord.gg/G6ghF5G)
 [![HitCount](http://hits.dwyl.io/DoctorMacc/BedrockBackwards.svg)](http://hits.dwyl.io/DoctorMacc/BedrockBackwards)
 
-Connects newer and older clients to Bedrock servers. Currently supports 1.14-1.16.2.
+Connects newer and older clients to Bedrock servers. Supports 1.14-1.16.2.
+
+Newer versions would require tracking and rewriting the block palette for chunks, since the block palette is hardcoded as of 1.16.100.
